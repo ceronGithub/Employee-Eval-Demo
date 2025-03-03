@@ -10,8 +10,13 @@ namespace emp_eval_full_version
 {
     internal class Create_folder_class
     {
-        string mainFolderPath = @"" + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Desktop\\Report";
-        string reportFolderPath, excelFileFolderPath, pictureFolderPath, readMeFolderPath;
+        string mainFolderPath = @"" + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Desktop\\Employee-Evaluation-Report";
+        string reportFolderPath, excelFileFolderPath, pictureFolderPath, readMeFolderPath, employeeFolderPath, getEmployeeName;       
+        public string setEmployeeName(string employeeName)
+        {
+            getEmployeeName = employeeName;            
+            return getEmployeeName;
+        }
 
         public string MainFolderFunction()
         {
@@ -21,10 +26,19 @@ namespace emp_eval_full_version
         {
             return readMeFolderPath = MainFolderFunction() + "\\ReadMe";
         }
-        public string ReportFolderFunction() {  return reportFolderPath = MainFolderFunction() + "\\Report on - " + DateTime.Now.ToString("MM-dd-yyyy"); }
-        public string ExcelFileFolderFunction() { return excelFileFolderPath = ReportFolderFunction() + "\\Excel Report"; }
-        public string pictureFolderFunction() { return pictureFolderPath = ReportFolderFunction() + "\\Graphs"; }
+        public string ReportFolderFunction() 
+        {  return reportFolderPath = MainFolderFunction() + "\\Report on - " + DateTime.Now.ToString("MM-dd-yyyy"); }        
+        public string employeeFolderFunction(string employeeName) 
+        {
+            employeeName = getEmployeeName;
+            return employeeFolderPath = ReportFolderFunction() + "\\Evaluation of - " + employeeName; 
+        }
+        public string pictureFolderFunction()
+        { return pictureFolderPath = employeeFolderFunction(getEmployeeName) + "\\Graphs"; }
+        public string ExcelFileFolderFunction()
+        { return excelFileFolderPath = employeeFolderFunction(getEmployeeName) + "\\Excel Report"; }
 
+        //main folder = Employee-Evaluation-Report
         public void createMainFolderClass()
         {
             // this checks if the folder has been created. and if not create one
@@ -41,6 +55,7 @@ namespace emp_eval_full_version
             }
         }
 
+        // readme folder
         public void createReadMeFolderClass()
         {
             // this checks if the folder has been created. and if not create one
@@ -57,6 +72,7 @@ namespace emp_eval_full_version
             }
         }
 
+        //Report on - date!
         public void createProjectFolderClass()
         {
             if (!Directory.Exists(ReportFolderFunction()))
@@ -69,14 +85,16 @@ namespace emp_eval_full_version
             {
                 //MessageBox.Show("Folder compilation is existing.");
             }
-        }
+        }        
 
-        public void createExcelFolderClass()
+        //employeename folder
+        public void createEmployeeFolderClass()
         {
-            if (!Directory.Exists(ExcelFileFolderFunction()))
+            if (!Directory.Exists(employeeFolderFunction(getEmployeeName)))
             {
                 // create folder
-                Directory.CreateDirectory(ExcelFileFolderFunction());                
+                Directory.CreateDirectory(employeeFolderFunction(getEmployeeName));
+                MessageBox.Show("Folder(employee) Directory has been created \n @" + employeeFolderFunction(getEmployeeName), "Note!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -84,12 +102,30 @@ namespace emp_eval_full_version
             }
         }
 
+        //graph inside the employee folder.
         public void createPictureFolderClass()
         {
             if (!Directory.Exists(pictureFolderFunction()))
             {
                 // create folder
-                Directory.CreateDirectory(pictureFolderFunction());                
+                Directory.CreateDirectory(pictureFolderFunction());
+                MessageBox.Show("Folder(picture folder) Directory has been created \n @" + pictureFolderFunction(), "Note!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                Directory.Delete(pictureFolderFunction());
+                Directory.CreateDirectory(pictureFolderFunction());
+                MessageBox.Show("Folder(picture folder) Directory has been refreshed \n @" + pictureFolderFunction(), "Note!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        public void createExcelFolderClass()
+        {
+            if (!Directory.Exists(ExcelFileFolderFunction()))
+            {
+                // create folder
+                Directory.CreateDirectory(ExcelFileFolderFunction());
+                MessageBox.Show("Folder(excel folder) Directory has been created \n @" + ExcelFileFolderFunction(), "Note!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {

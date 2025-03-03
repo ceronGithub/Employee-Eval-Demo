@@ -16,6 +16,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Globalization;
 using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace emp_eval_full_version
 {
@@ -156,13 +157,15 @@ namespace emp_eval_full_version
             ChartArea[] chartArea = new ChartArea[ttlOfEmployees];
             Series[] series = new Series[ttlOfNumberOfSkills];
             Legend[] legend = new Legend[ttlOfNumberOfSkills];
+            int highest = 0, lowest = 0, currenthighest = 0;
+
 
             foreach (string empItem in empName)
             {
                 string[] empNameContent = empItem.Split(',');
 
                 chartGenerator[loopData] = new Chart();
-                chartGenerator[loopData].Name = string.Join("", empNameContent[loopData] + " - Chart");
+                chartGenerator[loopData].Name = empNameContent[loopData] + " - Chart";
                 chartGenerator[loopData].Titles.Add(string.Join("", empNameContent[loopData] + " - Chart"));
                 chartGenerator[loopData].Height = 400;
                 chartGenerator[loopData].Width = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
@@ -200,12 +203,20 @@ namespace emp_eval_full_version
                         foreach (string item in empGrade)
                         {                            
                             string[] empGrades = item.Split(',');
+                            if(Convert.ToInt32(empGrades[s]) > currenthighest)
+                            {
+                                currenthighest = Convert.ToInt32(empGrades[s]);
+                                highest = currenthighest;                                
+                            }
+                           
                             series1.Points.AddXY(skillHeaderName[s], empGrades[s]);
                             series1.Points[s].Color = colr;
                             series1.Points[s].Label = skillHeaderName[s] +" : "+ empGrades[s];
                         }                                                
-                    }                    
-                }
+                    }          
+                }               
+                
+
                 Legend legendSingle = new Legend();
                 legendSingle.Title = "Skill Legend/s";
                 legendSingle.LegendStyle = LegendStyle.Table;
@@ -214,6 +225,7 @@ namespace emp_eval_full_version
                 chartGenerator[loopData].Invalidate();
 
                 chartGenerator[loopData].ChartAreas.Clear();
+                
                 chartArea[loopData] = new ChartArea();                
                 chartArea[loopData].Name = "ChartArea #" + loopData;
 
@@ -227,13 +239,23 @@ namespace emp_eval_full_version
                 chartArea[loopData].AxisX.TextOrientation = TextOrientation.Rotated90;
                 chartArea[loopData].AxisX.Interval = 1;
                 */
+
+                chartArea[loopData].AxisY.Minimum = lowest;
+                chartArea[loopData].AxisY.Maximum = highest + 2;
+
                 chartArea[loopData].AxisX.ScaleView.Zoom(0, 8);
                 chartArea[loopData].AxisX.ScaleView.MinSize = 0;
+                chartArea[loopData].CursorX.AutoScroll = true;
+                chartArea[loopData].CursorX.IsUserEnabled = true;
+                chartArea[loopData].AxisX.ScaleView.Zoomable = true;
                 chartArea[loopData].AxisX.ScrollBar.Enabled = true;
                 chartArea[loopData].AxisX.ScrollBar.IsPositionedInside = true;
                 chartArea[loopData].AxisX.ScrollBar.Size = 20;
                 chartArea[loopData].AxisX.ScrollBar.ButtonColor = Color.Silver;
                 chartArea[loopData].AxisX.ScrollBar.LineColor = Color.Black;
+                
+                chartArea[loopData].AxisX.ScaleView.Size = 8;                
+                chartArea[loopData].AxisX.ScaleView.Position = 1;
 
                 chartArea[loopData].AxisX.Title = "Grade Value (on each skill)";
                 chartArea[loopData].AxisX.TitleAlignment = StringAlignment.Center;
@@ -246,65 +268,99 @@ namespace emp_eval_full_version
                 chartGenerator[loopData].ChartAreas.Add(chartArea[loopData]);
 
                 chartGenerator[loopData].Visible = true;
-                dynamicButtons(form, ttlOfEmployees, loopData, locationCoordinates);
-                form.Controls.Add(chartGenerator[loopData]);                               
+                
+                dynamicButtons(form, ttlOfEmployees, loopData, locationCoordinates, chartGenerator[loopData], string.Join("", empNameContent[loopData]));
+                               
+                form.Controls.Add(chartGenerator[loopData]);                         
             }            
             return locationCoordinates;            
         }
 
-        private void dynamicButtons(Form form, int ttlOfButtons, int loopDate, int locationCoordinates)
+        private void dynamicButtons(Form form, int ttlOfButtons, int loopData, int locationCoordinates, Chart chart, string employeeName)
         {
 
             // print button
             Button[] printBtn = new Button[ttlOfButtons];
-            printBtn[loopDate] = new Button();
-            printBtn[loopDate].Text = "Print";
-            printBtn[loopDate].Width = 70;
-            printBtn[loopDate].Height = 30;
+            printBtn[loopData] = new Button();
+            printBtn[loopData].Text = "Print";
+            printBtn[loopData].Width = 70;
+            printBtn[loopData].Height = 30;            
 
-            printBtn[loopDate].Image = (new Bitmap(Resource1.printer, new Size(30, 20)));
-            printBtn[loopDate].ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            printBtn[loopDate].TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            printBtn[loopDate].Location = new System.Drawing.Point(150, locationCoordinates + 7);
+            printBtn[loopData].Image = (new Bitmap(Resource1.printer, new Size(30, 20)));
+            printBtn[loopData].ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            printBtn[loopData].TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            printBtn[loopData].Location = new System.Drawing.Point(150, locationCoordinates + 7);
 
-            printBtn[loopDate].Click += new EventHandler(print_click);
+            //printBtn[loopDate].Click += new EventHandler(print_click, loopDate);                      
 
             // savefile button
             Button[] saveFileBtn = new Button[ttlOfButtons];
-            saveFileBtn[loopDate] = new Button();
-            saveFileBtn[loopDate].Text = "Save-File as image";            
-            saveFileBtn[loopDate].Width = 140;
-            saveFileBtn[loopDate].Height = 30;
+            saveFileBtn[loopData] = new Button();
+            saveFileBtn[loopData].Text = "Save-File as image";            
+            saveFileBtn[loopData].Width = 140;
+            saveFileBtn[loopData].Height = 30;
 
-            saveFileBtn[loopDate].Image = (new Bitmap(Resource1.savefile, new Size(30, 20)));
-            saveFileBtn[loopDate].ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            saveFileBtn[loopDate].TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            saveFileBtn[loopDate].Location = new System.Drawing.Point(230, locationCoordinates + 7);
+            saveFileBtn[loopData].Image = (new Bitmap(Resource1.savefile, new Size(30, 20)));
+            saveFileBtn[loopData].ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            saveFileBtn[loopData].TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            saveFileBtn[loopData].Location = new System.Drawing.Point(230, locationCoordinates + 7);
 
             // excel button
             Button[] excelBtn = new Button[ttlOfButtons];
-            excelBtn[loopDate] = new Button();
-            excelBtn[loopDate].Text = "Export to";
-            excelBtn[loopDate].Width = 80;
-            excelBtn[loopDate].Height = 30;
+            excelBtn[loopData] = new Button();
+            excelBtn[loopData].Text = "Export to";
+            excelBtn[loopData].Width = 80;
+            excelBtn[loopData].Height = 30;
 
-            excelBtn[loopDate].Image = (new Bitmap(Resource1.excel, new Size(30, 20)));
-            excelBtn[loopDate].ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            excelBtn[loopDate].TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            excelBtn[loopDate].Location = new System.Drawing.Point(380, locationCoordinates + 7);
+            excelBtn[loopData].Image = (new Bitmap(Resource1.excel, new Size(30, 20)));
+            excelBtn[loopData].ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            excelBtn[loopData].TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            excelBtn[loopData].Location = new System.Drawing.Point(380, locationCoordinates + 7);            
 
-            form.Controls.Add(excelBtn[loopDate]);
-            form.Controls.Add(saveFileBtn[loopDate]);
-            form.Controls.Add(printBtn[loopDate]);
+            //Clicked event
+            printBtn[loopData].Click += (sender, e) => print_click(sender, e);
+            saveFileBtn[loopData].Click += (sender, e) => saveFile_click(sender, e, chart, folderCreation.ReportFolderFunction(), ".jpg", employeeName);
+            excelBtn[loopData].Click += (sender, e) => exportToExcel_click(sender, e);
+
+            //add chart to the form
+            form.Controls.Add(excelBtn[loopData]);
+            form.Controls.Add(saveFileBtn[loopData]);
+            form.Controls.Add(printBtn[loopData]);
         }
 
         protected void print_click(object sender, EventArgs e)
-        {
+        {            
             printMethod();
         }
+
+        protected void saveFile_click(object sender, EventArgs e,Chart chart, string path, string fileExtension, string employeeName)
+        {
+            string addedPath = path + "\\Evaluation of - " + employeeName + "\\Graphs";            
+            //creates folder
+            folderCreation.setEmployeeName(employeeName);
+            folderCreation.createEmployeeFolderClass();
+            folderCreation.createPictureFolderClass();
+            folderCreation.createExcelFolderClass();            
+            saveFile(chart, addedPath, fileExtension, employeeName);            
+        }
+
+        protected void exportToExcel_click(object sender, EventArgs e)
+        {
+            exportToExcel();
+        }
+
         private void printMethod()
         {
             MessageBox.Show("Print");
+        }
+        private void saveFile(Chart chart, string folderPath, string fileExtension, string employeeName)
+        {            
+            chart.SaveImage(folderPath + "\\" + employeeName + fileExtension, ChartImageFormat.Jpeg);            
+        }
+
+        private void exportToExcel()
+        {
+            MessageBox.Show("Succesfully export to excel.");
         }
     }
 }

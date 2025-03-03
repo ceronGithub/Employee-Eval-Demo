@@ -20,8 +20,7 @@ namespace emp_eval_full_version
         General_class generalClass = new General_class();
         Create_folder_class folderCreation = new Create_folder_class();
         Path_class paths = new Path_class();
-
-        
+       
         public Form1()
         {
             InitializeComponent();
