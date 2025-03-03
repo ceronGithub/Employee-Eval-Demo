@@ -148,8 +148,8 @@ namespace emp_eval_full_version
         public int chartGenerator(Form form, int locationCord, int loopData, int ttlOfEmployees, int ttlOfNumberOfSkills, List<string> empName, string[] empGrade, List<string> skillHeaderContent)
         {
             int locationCoordinates = locationCord == 0 ? locationCord = 76
-                                    : locationCord == 76 ? locationCord += 356
-                                    : locationCord = locationCord + 356;
+                                    : locationCord == 76 ? locationCord += 406
+                                    : locationCord = locationCord + 406;
             
             Random randomClr = new Random();
             Chart[] chartGenerator = new Chart[ttlOfEmployees];
@@ -164,89 +164,52 @@ namespace emp_eval_full_version
                 chartGenerator[loopData] = new Chart();
                 chartGenerator[loopData].Name = string.Join("", empNameContent[loopData] + " - Chart");
                 chartGenerator[loopData].Titles.Add(string.Join("", empNameContent[loopData] + " - Chart"));
-                chartGenerator[loopData].Height = 350;
+                chartGenerator[loopData].Height = 400;
                 chartGenerator[loopData].Width = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
                 chartGenerator[loopData].Location = new System.Drawing.Point(0, locationCoordinates);                
 
                 chartGenerator[loopData].Series.Clear();
-                
+
                 var series1 = new System.Windows.Forms.DataVisualization.Charting.Series
-                {                                     
+                {                    
                     IsVisibleInLegend = false,
                     IsXValueIndexed = true,
-                    ChartType = SeriesChartType.Column
+                    ChartType = SeriesChartType.Column,                    
                 };
                 chartGenerator[loopData].Series.Add(series1);
 
                 for (int s = 0; s < ttlOfNumberOfSkills; s++)
                 {
                     Color colr = Color.FromArgb(randomClr.Next(1, 255), randomClr.Next(1, 255), randomClr.Next(1, 255));
-
+                                        
                     foreach (string headerItem in skillHeaderContent)
                     {
                         string[] skillHeaderName = headerItem.Split(',');
-
-                        series[s] = new Series {
+                        /*
+                         * This overlay the layout of the series.
+                         * This only shows the legend/s of the series.
+                         */
+                        series[s] = new Series
+                        {
                             Name = skillHeaderName[s],
                             Color = colr,
-                            IsValueShownAsLabel = true
-                            /*
-                            IsXValueIndexed = false,
-                            Label = skillHeaderName[s],
-                            ChartType = SeriesChartType.Column 
-                            */
+                            IsValueShownAsLabel = true,                                                        
                         };
-                        chartGenerator[loopData].Series.Add(series[s]);                       
+                        chartGenerator[loopData].Series.Add(series[s]);
 
                         foreach (string item in empGrade)
-                        {
-                            string[] empGrades = item.Split(',');                            
-                            //series[s].Points.Clear();
-                            //series[s].Points.AddXY(skillHeaderName[s], empGrades[s]);
-
-                                                       
-                            if (double.TryParse(empGrades[s], out double convertedToDouble))
-                            {
-                                //MessageBox.Show("" + convertedToDouble);                                
-                                series1.Points.Add(convertedToDouble);
-                                series1.Points[s].Color = colr;
-                                series1.Points[s].Label = skillHeaderName[s];
-                                series1.Points[s].AxisLabel = "Skill : " + skillHeaderName[s];
-                                //series1.Points[s].AxisLabel = skillHeaderName[s];
-                                //series1.Points[s].LegendText = skillHeaderName[s];
-                            }                              
-                        }
-                                            
-                        /*
-                        legend[s] = new Legend();
-                        legend[s].LegendStyle = LegendStyle.Column;
-                        legend[s].BorderColor = Color.Black;
-                        legend[s].BorderWidth = 3;
-                        legend[s].BorderDashStyle = ChartDashStyle.Solid;
-                        legend[s].Alignment = StringAlignment.Center;
-                        //legend[s].DockedToChartArea = areaCounter.ToString();
-                        legend[s].Docking = Docking.Right;
-                        legend[s].Name = skillHeaderName[s];
-                        legend[s].IsTextAutoFit = true;
-                        legend[s].InterlacedRows = true;
-                        legend[s].TableStyle = LegendTableStyle.Tall;
-                        legend[s].HeaderSeparator = LegendSeparatorStyle.Line;
-                        legend[s].HeaderSeparatorColor = Color.Gray;
-                        legend[s].IsDockedInsideChartArea = false;
-                        //legend[s].CustomItems.Add(colr, skillHeaderName[s]);
-                                                
-                        
-                        //legend[s].LegendItemOrder = LegendItemOrder.SameAsSeriesOrder;                        
-                        //legend[s].Position.Width = 100;
-                        //legend[s].Position.Height = 10;
-                        chartGenerator[loopData].Legends.Add(legend[s]);     
-                        */
-
-                        Legend legendSingle = new Legend();                        
-                        chartGenerator[loopData].Legends.Add(legendSingle);
+                        {                            
+                            string[] empGrades = item.Split(',');
+                            series1.Points.AddXY(skillHeaderName[s], empGrades[s]);
+                            series1.Points[s].Color = colr;
+                            series1.Points[s].Label = skillHeaderName[s] +" : "+ empGrades[s];
+                        }                                                
                     }                    
                 }
-               
+                Legend legendSingle = new Legend();
+                legendSingle.Title = "Skill Legend/s";
+                legendSingle.LegendStyle = LegendStyle.Table;
+                chartGenerator[loopData].Legends.Add(legendSingle);
 
                 chartGenerator[loopData].Invalidate();
 
@@ -255,8 +218,15 @@ namespace emp_eval_full_version
                 chartArea[loopData].Name = "ChartArea #" + loopData;
 
                 chartArea[loopData].AxisX.Minimum = 0;
-                chartArea[loopData].AxisX.Maximum = ttlOfNumberOfSkills + 1;                
+                chartArea[loopData].AxisX.Maximum = ttlOfNumberOfSkills + 1;
 
+                /*
+                 * this makes the x-axis string customize.
+                chartArea[loopData].AxisX.Title = "xxx";
+                chartArea[loopData].AxisX.TitleAlignment = StringAlignment.Center;
+                chartArea[loopData].AxisX.TextOrientation = TextOrientation.Rotated90;
+                chartArea[loopData].AxisX.Interval = 1;
+                */
                 chartArea[loopData].AxisX.ScaleView.Zoom(0, 8);
                 chartArea[loopData].AxisX.ScaleView.MinSize = 0;
                 chartArea[loopData].AxisX.ScrollBar.Enabled = true;
@@ -265,11 +235,14 @@ namespace emp_eval_full_version
                 chartArea[loopData].AxisX.ScrollBar.ButtonColor = Color.Silver;
                 chartArea[loopData].AxisX.ScrollBar.LineColor = Color.Black;
 
-                chartArea[loopData].AxisX.Title = "Grade Value";
-                chartArea[loopData].AxisX.TitleAlignment = StringAlignment.Far;
+                chartArea[loopData].AxisX.Title = "Grade Value (on each skill)";
+                chartArea[loopData].AxisX.TitleAlignment = StringAlignment.Center;
+                chartArea[loopData].AxisX.TitleForeColor = Color.Red;
+                chartArea[loopData].AxisX.TitleFont = new Font("Sans Serif", 10, FontStyle.Bold);
 
                 chartArea[loopData].AxisY.Title = "Grade Evaluation \n -------------- \n " + empNameContent[loopData];
-                chartArea[loopData].AxisY.TitleAlignment = StringAlignment.Far;
+                chartArea[loopData].AxisY.TitleAlignment = StringAlignment.Center;
+
                 chartGenerator[loopData].ChartAreas.Add(chartArea[loopData]);
 
                 chartGenerator[loopData].Visible = true;
