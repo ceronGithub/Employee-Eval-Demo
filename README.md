@@ -23,3 +23,7 @@ type in the ff:
 * git checkout branch_name file_path_and_type
 * git commit -m "comment"
 * git push -u origin branch name nor git push
+
+// DELETE GIT BRANCH
+URL : https://stackoverflow.com/questions/2003505/how-do-i-delete-a-git-branch-locally-and-remotely
+git branch -d {local_branch}
