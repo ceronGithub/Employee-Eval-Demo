@@ -7,22 +7,12 @@ firstly create 2 branches
 
 //*******************************GIT COMMAND**********************************************
 if you have 2 branches. 
-* checkout to first branch
-* type-in to terminal 'git checkout branch_name _type_the_full_file_path_and_type'
-* git status : to double check if it found the file you are looking for
+* checkout to first branch : git checkout -b branch_name
+* echo file >> file.extension : sample.exe
+* git add file.extension : sample.exe
+* git status
+* git push -u origin branch_name
 
-create new branch
-* git checkout -b branch_name
-
-then commit 
-* git commit -m "comment"
-* git push -u origin branch name nor git push
-
-adding new specific file to the new branch
-type in the ff:
-* git checkout branch_name file_path_and_type
-* git commit -m "comment"
-* git push -u origin branch name nor git push
 
 // DELETE GIT BRANCH
 URL : https://stackoverflow.com/questions/2003505/how-do-i-delete-a-git-branch-locally-and-remotely
