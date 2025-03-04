@@ -17,6 +17,7 @@ using System.Runtime.InteropServices;
 using System.Globalization;
 using System.Xml.Linq;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using System.Drawing.Imaging;
 
 namespace emp_eval_full_version
 {
@@ -145,7 +146,8 @@ namespace emp_eval_full_version
             }
             return skillCount;
         }
-        
+
+        List<Image> imageList = new List<Image>();
         public int chartGenerator(Form form, int locationCord, int loopData, int ttlOfEmployees, int ttlOfNumberOfSkills, List<string> empName, string[] empGrade, List<string> skillHeaderContent)
         {
             int locationCoordinates = locationCord == 0 ? locationCord = 76
@@ -252,11 +254,8 @@ namespace emp_eval_full_version
                 chartArea[loopData].AxisX.ScrollBar.IsPositionedInside = true;
                 chartArea[loopData].AxisX.ScrollBar.Size = 20;
                 chartArea[loopData].AxisX.ScrollBar.ButtonColor = Color.Silver;
-                chartArea[loopData].AxisX.ScrollBar.LineColor = Color.Black;
+                chartArea[loopData].AxisX.ScrollBar.LineColor = Color.Black;                                                   
                 
-                chartArea[loopData].AxisX.ScaleView.Size = 8;                
-                chartArea[loopData].AxisX.ScaleView.Position = 1;
-
                 chartArea[loopData].AxisX.Title = "Grade Value (on each skill)";
                 chartArea[loopData].AxisX.TitleAlignment = StringAlignment.Center;
                 chartArea[loopData].AxisX.TitleForeColor = Color.Red;
@@ -268,17 +267,31 @@ namespace emp_eval_full_version
                 chartGenerator[loopData].ChartAreas.Add(chartArea[loopData]);
 
                 chartGenerator[loopData].Visible = true;
-                
-                dynamicButtons(form, ttlOfEmployees, loopData, locationCoordinates, chartGenerator[loopData], string.Join("", empNameContent[loopData]));
+
+                int ttlNumberOfImages = ttlOfNumberOfSkills - 5;
+                dynamicButtons(form, ttlOfEmployees, loopData, ttlNumberOfImages, locationCoordinates, chartGenerator[loopData], string.Join("", empNameContent[loopData]), imageList);
                                
-                form.Controls.Add(chartGenerator[loopData]);                         
+                form.Controls.Add(chartGenerator[loopData]);                
+
+                // Convert chart to images.
+                for (int si = 1; si <= ttlNumberOfImages; si++)
+                {
+                    chartArea[loopData].AxisX.ScaleView.Size = 5;
+                    chartArea[loopData].AxisX.ScaleView.Position = si;
+
+                    using (var ms = new MemoryStream())
+                    {
+                        chartGenerator[loopData].SaveImage(ms, ChartImageFormat.Png);
+                        var bmp = System.Drawing.Bitmap.FromStream(ms);
+                        imageList.Add(bmp);
+                    }
+                }
             }            
             return locationCoordinates;            
         }
 
-        private void dynamicButtons(Form form, int ttlOfButtons, int loopData, int locationCoordinates, Chart chart, string employeeName)
+        private void dynamicButtons(Form form, int ttlOfButtons, int loopData, int ttlOfImages,int locationCoordinates, Chart chart, string employeeName, List<Image> imageChart)
         {
-
             // print button
             Button[] printBtn = new Button[ttlOfButtons];
             printBtn[loopData] = new Button();
@@ -318,8 +331,8 @@ namespace emp_eval_full_version
             excelBtn[loopData].Location = new System.Drawing.Point(380, locationCoordinates + 7);            
 
             //Clicked event
-            printBtn[loopData].Click += (sender, e) => print_click(sender, e);
-            saveFileBtn[loopData].Click += (sender, e) => saveFile_click(sender, e, chart, folderCreation.ReportFolderFunction(), ".jpg", employeeName);
+            printBtn[loopData].Click += (sender, e) => print_click(sender, e, loopData);
+            saveFileBtn[loopData].Click += (sender, e) => saveFile_click(sender, e, chart, imageChart, folderCreation.ReportFolderFunction(), ".jpg", employeeName, (loopData+1), ttlOfImages);
             excelBtn[loopData].Click += (sender, e) => exportToExcel_click(sender, e);
 
             //add chart to the form
@@ -328,20 +341,31 @@ namespace emp_eval_full_version
             form.Controls.Add(printBtn[loopData]);
         }
 
-        protected void print_click(object sender, EventArgs e)
-        {            
-            printMethod();
-        }
 
-        protected void saveFile_click(object sender, EventArgs e,Chart chart, string path, string fileExtension, string employeeName)
+
+
+
+        // ======================================== CLICK-EVENT===========================================
+        protected void print_click(object sender, EventArgs e, int employeeNumber)
+        {            
+            printMethod(employeeNumber);
+        }
+        
+        protected void saveFile_click(object sender, EventArgs e,Chart chart, List<Image> chartImages, string path, string fileExtension, string employeeName, int employeeNumber, int ttlOfImages)
         {
-            string addedPath = path + "\\Evaluation of - " + employeeName + "\\Graphs";            
+            //int ttlOfImageCollection = chartImages.Count();
+
+            string addedPath = path + "\\Evaluation of - " + employeeName + "\\Graphs";
             //creates folder
             folderCreation.setEmployeeName(employeeName);
             folderCreation.createEmployeeFolderClass();
             folderCreation.createPictureFolderClass();
-            folderCreation.createExcelFolderClass();            
-            saveFile(chart, addedPath, fileExtension, employeeName);            
+            folderCreation.createExcelFolderClass();
+
+            Image finalImage = mergeImages(chartImages, employeeNumber, ttlOfImages);
+            finalImage.Save(addedPath + "\\" + employeeName + fileExtension, ImageFormat.Png);                       
+            
+            //saveFile(chart, addedPath, fileExtension, employeeName);            
         }
 
         protected void exportToExcel_click(object sender, EventArgs e)
@@ -349,18 +373,48 @@ namespace emp_eval_full_version
             exportToExcel();
         }
 
-        private void printMethod()
+
+        // ======================================== METHOD-EVENT===========================================
+        private void printMethod(int employeeNumber)
         {
-            MessageBox.Show("Print");
+            MessageBox.Show("Print " + ((employeeNumber + 1) * 5));
         }
         private void saveFile(Chart chart, string folderPath, string fileExtension, string employeeName)
-        {            
+        {                        
             chart.SaveImage(folderPath + "\\" + employeeName + fileExtension, ChartImageFormat.Jpeg);            
         }
-
         private void exportToExcel()
         {
             MessageBox.Show("Succesfully export to excel.");
+        }
+
+        public Image mergeImages(List<Image> imageList, int employeeNumber, int ttlOfImagess)
+        {
+            int startImageRange = (((employeeNumber * ttlOfImagess)) - ttlOfImagess);
+            int endImageRange = (employeeNumber * ttlOfImagess);
+            //MessageBox.Show("start : " + startImageRange + "\n end : " + endImageRange);
+
+            // merge multiple images into 1 picture file.
+            var finalSize = new Size();
+            foreach (var image in imageList.Take(endImageRange).Skip(startImageRange))
+            {
+                if (image.Width > finalSize.Width)
+                {
+                    finalSize.Width = image.Width;
+                }
+                finalSize.Height += image.Height;
+            }
+            var outputImage = new Bitmap(finalSize.Width, finalSize.Height);
+            using (var gfx = Graphics.FromImage(outputImage))
+            {
+                var y = 0;
+                foreach (var image in imageList.Take(endImageRange).Skip(startImageRange))
+                {
+                    gfx.DrawImage(image, 0, y);
+                    y += image.Height;
+                }
+            }
+            return outputImage;
         }
     }
 }
