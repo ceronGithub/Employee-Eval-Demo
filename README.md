@@ -5,7 +5,7 @@ this is the full version of employee evaluation
 firstly create 2 branches
 1 branch main, 2 branch develop
 
-
+//*******************************GIT COMMAND**********************************************
 if you have 2 branches. 
 * checkout to first branch
 * type-in to terminal 'git checkout branch_name _type_the_full_file_path_and_type'
