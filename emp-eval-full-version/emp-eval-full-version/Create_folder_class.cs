@@ -113,9 +113,12 @@ namespace emp_eval_full_version
             }
             else
             {
+                // delete
+                /*
                 Directory.Delete(pictureFolderFunction());
                 Directory.CreateDirectory(pictureFolderFunction());
                 MessageBox.Show("Folder(picture folder) Directory has been refreshed \n @" + pictureFolderFunction(), "Note!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                */
             }
         }
 

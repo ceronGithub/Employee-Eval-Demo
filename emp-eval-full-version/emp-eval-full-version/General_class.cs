@@ -363,7 +363,18 @@ namespace emp_eval_full_version
             folderCreation.createExcelFolderClass();
 
             Image finalImage = mergeImages(chartImages, employeeNumber, ttlOfImages);
-            finalImage.Save(addedPath + "\\" + employeeName + fileExtension, ImageFormat.Png);                       
+
+            //checks if image is existing.
+            if(!File.Exists(addedPath + "\\" + employeeName + fileExtension))
+            {
+                finalImage.Save(addedPath + "\\" + employeeName + fileExtension, ImageFormat.Png);
+            }
+            else
+            {
+                File.Delete(addedPath + "\\" + employeeName + fileExtension);
+                finalImage.Save(addedPath + "\\" + employeeName + fileExtension, ImageFormat.Png);
+                MessageBox.Show("Folder(picture folder) Directory has been updated \n @" + addedPath, "Note!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             
             //saveFile(chart, addedPath, fileExtension, employeeName);            
         }
