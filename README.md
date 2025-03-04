@@ -27,3 +27,6 @@ type in the ff:
 // DELETE GIT BRANCH
 URL : https://stackoverflow.com/questions/2003505/how-do-i-delete-a-git-branch-locally-and-remotely
 git branch -d {local_branch}
+git branch -D branch_name
+git push -d origin branch_name
+git branch -D branch_name
