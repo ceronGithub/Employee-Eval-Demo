@@ -18,17 +18,18 @@ using System.Globalization;
 using System.Xml.Linq;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 
 namespace emp_eval_full_version
 {
     internal class General_class
     {
         Path_class paths = new Path_class();
-        Create_folder_class folderCreation = new Create_folder_class();        
+        Create_folder_class folderCreation = new Create_folder_class();
 
         public List<string> headerContent(List<string> fileContents)
         {
-            List<string> headercontent = fileContents.Take(1).ToList();            
+            List<string> headercontent = fileContents.Take(1).ToList();
             return headercontent;
         }
 
@@ -50,15 +51,15 @@ namespace emp_eval_full_version
             foreach (string items in fileContents)
             {
                 skillcontentcount = items.Split(',').Count();
-            }                        
+            }
             return skillcontentcount;
         }
 
         public int empCount(List<string> fileContents)
-        {            
+        {
             int count = 0;
             foreach (string items in fileContents)
-            {                
+            {
                 count += items.Split('/').Count() - 1;
             }
             return count;
@@ -79,24 +80,24 @@ namespace emp_eval_full_version
             }
             return empcontent;
         }
-        
+
         public List<string> employeeContent(List<string> fileContents)
         {
             List<string> empContent = new List<string>();
-            foreach(string item in fileContents.Skip(1).ToList())
+            foreach (string item in fileContents.Skip(1).ToList())
             {
                 string[] empContentArr = item.Split(',').ToArray();
                 // put comma inbetween datas
-                string putComma = string.Join(",",empContentArr);
+                string putComma = string.Join(",", empContentArr);
                 // put comma to each end of row data.
-                empContent.Add(putComma + "/");                
+                empContent.Add(putComma + "/");
             }
             return empContent;
         }
 
         public string employeeNameContent(List<string> fileContents)
         {
-            string personNames = "";            
+            string personNames = "";
             foreach (string employeeName in fileContents)
             {
                 string[] seperateName = employeeName.Split(',');
@@ -115,7 +116,7 @@ namespace emp_eval_full_version
                 //MessageBox.Show(skillItem);
                 // skips the 1-3 index of array
                 // output : 123/
-                string[] seperateSkillContent = skillItem.Split(',').Skip(3).ToArray();    
+                string[] seperateSkillContent = skillItem.Split(',').Skip(3).ToArray();
                 // output : 1,2,3/
                 empGradeCollection += string.Join(",", seperateSkillContent);
                 //MessageBox.Show(string.Join("", empGradeCollection));
@@ -125,13 +126,13 @@ namespace emp_eval_full_version
 
         // count how many emp are listed
         public int employeeContentCount(List<string> fileContents)
-        {            
+        {
             int empCount = 0;
             foreach (string item in fileContents)
             {
-                string[] split = item.Split('/');                
-                empCount += split.Count() - 1;      
-            }            
+                string[] split = item.Split('/');
+                empCount += split.Count() - 1;
+            }
             return empCount;
         }
 
@@ -153,7 +154,7 @@ namespace emp_eval_full_version
             int locationCoordinates = locationCord == 0 ? locationCord = 76
                                     : locationCord == 76 ? locationCord += 406
                                     : locationCord = locationCord + 406;
-            
+
             Random randomClr = new Random();
             Chart[] chartGenerator = new Chart[ttlOfEmployees];
             ChartArea[] chartArea = new ChartArea[ttlOfEmployees];
@@ -171,22 +172,22 @@ namespace emp_eval_full_version
                 chartGenerator[loopData].Titles.Add(string.Join("", empNameContent[loopData] + " - Chart"));
                 chartGenerator[loopData].Height = 400;
                 chartGenerator[loopData].Width = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
-                chartGenerator[loopData].Location = new System.Drawing.Point(0, locationCoordinates);                
+                chartGenerator[loopData].Location = new System.Drawing.Point(0, locationCoordinates);
 
                 chartGenerator[loopData].Series.Clear();
 
                 var series1 = new System.Windows.Forms.DataVisualization.Charting.Series
-                {                    
+                {
                     IsVisibleInLegend = false,
                     IsXValueIndexed = true,
-                    ChartType = SeriesChartType.Column,                    
+                    ChartType = SeriesChartType.Column,
                 };
                 chartGenerator[loopData].Series.Add(series1);
 
                 for (int s = 0; s < ttlOfNumberOfSkills; s++)
                 {
                     Color colr = Color.FromArgb(randomClr.Next(1, 255), randomClr.Next(1, 255), randomClr.Next(1, 255));
-                                        
+
                     foreach (string headerItem in skillHeaderContent)
                     {
                         string[] skillHeaderName = headerItem.Split(',');
@@ -198,26 +199,26 @@ namespace emp_eval_full_version
                         {
                             Name = skillHeaderName[s],
                             Color = colr,
-                            IsValueShownAsLabel = true,                                                        
+                            IsValueShownAsLabel = true,
                         };
                         chartGenerator[loopData].Series.Add(series[s]);
 
                         foreach (string item in empGrade)
-                        {                            
+                        {
                             string[] empGrades = item.Split(',');
-                            if(Convert.ToInt32(empGrades[s]) > currenthighest)
+                            if (Convert.ToInt32(empGrades[s]) > currenthighest)
                             {
                                 currenthighest = Convert.ToInt32(empGrades[s]);
-                                highest = currenthighest;                                
+                                highest = currenthighest;
                             }
-                           
+
                             series1.Points.AddXY(skillHeaderName[s], empGrades[s]);
                             series1.Points[s].Color = colr;
-                            series1.Points[s].Label = skillHeaderName[s] +" : "+ empGrades[s];
-                        }                                                
-                    }          
-                }               
-                
+                            series1.Points[s].Label = skillHeaderName[s] + " : " + empGrades[s];
+                        }
+                    }
+                }
+
 
                 Legend legendSingle = new Legend();
                 legendSingle.Title = "Skill Legend/s";
@@ -227,8 +228,8 @@ namespace emp_eval_full_version
                 chartGenerator[loopData].Invalidate();
 
                 chartGenerator[loopData].ChartAreas.Clear();
-                
-                chartArea[loopData] = new ChartArea();                
+
+                chartArea[loopData] = new ChartArea();
                 chartArea[loopData].Name = "ChartArea #" + loopData;
 
                 chartArea[loopData].AxisX.Minimum = 0;
@@ -254,8 +255,8 @@ namespace emp_eval_full_version
                 chartArea[loopData].AxisX.ScrollBar.IsPositionedInside = true;
                 chartArea[loopData].AxisX.ScrollBar.Size = 20;
                 chartArea[loopData].AxisX.ScrollBar.ButtonColor = Color.Silver;
-                chartArea[loopData].AxisX.ScrollBar.LineColor = Color.Black;                                                   
-                
+                chartArea[loopData].AxisX.ScrollBar.LineColor = Color.Black;
+
                 chartArea[loopData].AxisX.Title = "Grade Value (on each skill)";
                 chartArea[loopData].AxisX.TitleAlignment = StringAlignment.Center;
                 chartArea[loopData].AxisX.TitleForeColor = Color.Red;
@@ -270,8 +271,8 @@ namespace emp_eval_full_version
 
                 int ttlNumberOfImages = ttlOfNumberOfSkills - 5;
                 dynamicButtons(form, ttlOfEmployees, loopData, ttlNumberOfImages, locationCoordinates, chartGenerator[loopData], string.Join("", empNameContent[loopData]), imageList);
-                               
-                form.Controls.Add(chartGenerator[loopData]);                
+
+                form.Controls.Add(chartGenerator[loopData]);
 
                 // Convert chart to images.
                 for (int si = 1; si <= ttlNumberOfImages; si++)
@@ -286,18 +287,18 @@ namespace emp_eval_full_version
                         imageList.Add(bmp);
                     }
                 }
-            }            
-            return locationCoordinates;            
+            }
+            return locationCoordinates;
         }
 
-        private void dynamicButtons(Form form, int ttlOfButtons, int loopData, int ttlOfImages,int locationCoordinates, Chart chart, string employeeName, List<Image> imageChart)
+        private void dynamicButtons(Form form, int ttlOfButtons, int loopData, int ttlOfImages, int locationCoordinates, Chart chart, string employeeName, List<Image> imageChart)
         {
             // print button
             Button[] printBtn = new Button[ttlOfButtons];
             printBtn[loopData] = new Button();
             printBtn[loopData].Text = "Print";
             printBtn[loopData].Width = 70;
-            printBtn[loopData].Height = 30;            
+            printBtn[loopData].Height = 30;
 
             printBtn[loopData].Image = (new Bitmap(Resource1.printer, new Size(30, 20)));
             printBtn[loopData].ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -309,7 +310,7 @@ namespace emp_eval_full_version
             // savefile button
             Button[] saveFileBtn = new Button[ttlOfButtons];
             saveFileBtn[loopData] = new Button();
-            saveFileBtn[loopData].Text = "Save-File as image";            
+            saveFileBtn[loopData].Text = "Save-File as image";
             saveFileBtn[loopData].Width = 140;
             saveFileBtn[loopData].Height = 30;
 
@@ -328,11 +329,11 @@ namespace emp_eval_full_version
             excelBtn[loopData].Image = (new Bitmap(Resource1.excel, new Size(30, 20)));
             excelBtn[loopData].ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             excelBtn[loopData].TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            excelBtn[loopData].Location = new System.Drawing.Point(380, locationCoordinates + 7);            
+            excelBtn[loopData].Location = new System.Drawing.Point(380, locationCoordinates + 7);
 
             //Clicked event
             printBtn[loopData].Click += (sender, e) => print_click(sender, e, loopData);
-            saveFileBtn[loopData].Click += (sender, e) => saveFile_click(sender, e, chart, imageChart, folderCreation.ReportFolderFunction(), ".jpg", employeeName, (loopData+1), ttlOfImages);
+            saveFileBtn[loopData].Click += (sender, e) => saveFile_click(sender, e, chart, imageChart, folderCreation.ReportFolderFunction(), ".jpg", employeeName, (loopData + 1), ttlOfImages);
             excelBtn[loopData].Click += (sender, e) => exportToExcel_click(sender, e);
 
             //add chart to the form
@@ -347,11 +348,11 @@ namespace emp_eval_full_version
 
         // ======================================== CLICK-EVENT===========================================
         protected void print_click(object sender, EventArgs e, int employeeNumber)
-        {            
+        {
             printMethod(employeeNumber);
         }
-        
-        protected void saveFile_click(object sender, EventArgs e,Chart chart, List<Image> chartImages, string path, string fileExtension, string employeeName, int employeeNumber, int ttlOfImages)
+
+        protected void saveFile_click(object sender, EventArgs e, Chart chart, List<Image> chartImages, string path, string fileExtension, string employeeName, int employeeNumber, int ttlOfImages)
         {
             //int ttlOfImageCollection = chartImages.Count();
 
@@ -362,20 +363,22 @@ namespace emp_eval_full_version
             folderCreation.createPictureFolderClass();
             folderCreation.createExcelFolderClass();
 
-            Image finalImage = mergeImages(chartImages, employeeNumber, ttlOfImages);
+            Image finalImage = mergeImages(chartImages, employeeNumber, ttlOfImages, folderCreation.ReadMeFolderFunction(), employeeName, fileExtension);            
 
             //checks if image is existing.
-            if(!File.Exists(addedPath + "\\" + employeeName + fileExtension))
+            if (!File.Exists(addedPath + "\\single - " + employeeName + fileExtension))
             {
-                finalImage.Save(addedPath + "\\" + employeeName + fileExtension, ImageFormat.Png);
+                finalImage.Save(addedPath + "\\single - " + employeeName + fileExtension, ImageFormat.Png);
+                multipleImageSave(chartImages, employeeNumber, ttlOfImages, addedPath, employeeName, fileExtension);
             }
             else
             {
-                File.Delete(addedPath + "\\" + employeeName + fileExtension);
-                finalImage.Save(addedPath + "\\" + employeeName + fileExtension, ImageFormat.Png);
-                MessageBox.Show("Folder(picture folder) Directory has been updated \n @" + addedPath, "Note!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //delete
+                File.Delete(addedPath + "\\single - " + employeeName + fileExtension);               
+                //create
+                finalImage.Save(addedPath + "\\single - " + employeeName + fileExtension, ImageFormat.Png);
+                multipleImageSave(chartImages, employeeNumber, ttlOfImages, addedPath, employeeName, fileExtension);                
             }
-            
             //saveFile(chart, addedPath, fileExtension, employeeName);            
         }
 
@@ -391,15 +394,15 @@ namespace emp_eval_full_version
             MessageBox.Show("Print " + ((employeeNumber + 1) * 5));
         }
         private void saveFile(Chart chart, string folderPath, string fileExtension, string employeeName)
-        {                        
-            chart.SaveImage(folderPath + "\\" + employeeName + fileExtension, ChartImageFormat.Jpeg);            
+        {
+            chart.SaveImage(folderPath + "\\" + employeeName + fileExtension, ChartImageFormat.Jpeg);
         }
         private void exportToExcel()
         {
             MessageBox.Show("Succesfully export to excel.");
         }
 
-        public Image mergeImages(List<Image> imageList, int employeeNumber, int ttlOfImagess)
+        public Image mergeImages(List<Image> imageList, int employeeNumber, int ttlOfImagess, string path, string employeeName, string fileExtension)
         {
             int startImageRange = (((employeeNumber * ttlOfImagess)) - ttlOfImagess);
             int endImageRange = (employeeNumber * ttlOfImagess);
@@ -427,23 +430,49 @@ namespace emp_eval_full_version
             }
             return outputImage;
         }
+
+        private void multipleImageSave(List<Image> imageList, int employeeNumber, int ttlOfImagess, string path, string employeeName, string fileExtension)
+        {
+            int startImageRange = (((employeeNumber * ttlOfImagess)) - ttlOfImagess);
+            int endImageRange = (employeeNumber * ttlOfImagess);
+            //Image[] outputImage = new Image[ttlOfImagess];
+            
+            var finalSize = new Size();
+            foreach (var image in imageList.Take(endImageRange).Skip(startImageRange))
+            {                                
+                if (image.Width > finalSize.Width)
+                {
+                    finalSize.Width = image.Width;
+                }
+                finalSize.Height = image.Height ;               
+            } 
+
+            int y = 0;
+            int hheight = 0;
+            for (int im = 0; im < ttlOfImagess; im++)
+            {
+                y = 0;
+                hheight += 400;
+                var outputImage = new Bitmap(finalSize.Width, hheight);                
+                using (var gfx = Graphics.FromImage(outputImage))
+                {                                                                              
+                    foreach (var image in imageList.Take(endImageRange).Skip(startImageRange))
+                    {                        
+                        gfx.DrawImage(image, 0, y);
+                        y += image.Height;                       
+                    }
+                    outputImage.Save(path + "\\multi - " + im + employeeName + fileExtension, ImageFormat.Png);
+                }                
+            }
+
+            // save individual
+            List<Image> trial = new List<Image>(imageList.Take(endImageRange).Skip(startImageRange));
+            for(int im = 0; im < ttlOfImagess; im++)
+            {
+                trial[im].Save(path + "\\indi - " + im + employeeName + fileExtension, ImageFormat.Png);
+            }
+
+            MessageBox.Show("Folder(picture folder) Directory has been updated \n @" + path, "Note!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }
-
-//creating an object of NumberFormatInfo
-//NumberFormatInfo provider = new NumberFormatInfo();
-//provider.NumberDecimalSeparator = ".";
-//provider.NumberGroupSeparator = ",";
-//
-
-/*
-if (double.TryParse(empGrades[s], out double convertedToDouble))
-{
-    //MessageBox.Show("" + convertedToDouble);
-    series[s].Points.Add(convertedToDouble);
-    series[s].Points[s].Color = Color.FromArgb(randomClr.Next(0, 255), randomClr.Next(0, 255), randomClr.Next(0, 255)); ;
-    series[s].Points[s].AxisLabel = skillHeaderName[s];
-    series[s].Points[s].LegendText = skillHeaderName[s];
-    series[s].Points[s].Label = empGrades[s];
-}
-*/
