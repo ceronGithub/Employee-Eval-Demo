@@ -11,7 +11,7 @@ namespace emp_eval_full_version
     internal class Create_folder_class
     {
         string mainFolderPath = @"" + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Desktop\\Employee-Evaluation-Report";
-        string reportFolderPath, excelFileFolderPath, pictureFolderPath, readMeFolderPath, employeeFolderPath, getEmployeeName;       
+        string reportFolderPath, allPictureFolderPath,excelFileFolderPath, pictureFolderPath, readMeFolderPath, employeeFolderPath, getEmployeeName;       
         public string setEmployeeName(string employeeName)
         {
             getEmployeeName = employeeName;            
@@ -27,7 +27,11 @@ namespace emp_eval_full_version
             return readMeFolderPath = MainFolderFunction() + "\\ReadMe";
         }
         public string ReportFolderFunction() 
-        {  return reportFolderPath = MainFolderFunction() + "\\Report on - " + DateTime.Now.ToString("MM-dd-yyyy"); }        
+        {  return reportFolderPath = MainFolderFunction() + "\\Report on - " + DateTime.Now.ToString("MM-dd-yyyy"); }
+
+        public string AllPictureFolderFunction()
+        { return allPictureFolderPath = ReportFolderFunction() + "\\All-Output-Pictures"; }
+        
         public string employeeFolderFunction(string employeeName) 
         {
             employeeName = getEmployeeName;
@@ -85,7 +89,21 @@ namespace emp_eval_full_version
             {
                 //MessageBox.Show("Folder compilation is existing.");
             }
-        }        
+        }
+
+        public void createProjectPictureFolderClass()
+        {
+            if (!Directory.Exists(AllPictureFolderFunction()))
+            {
+                // create folder
+                Directory.CreateDirectory(AllPictureFolderFunction());
+                MessageBox.Show("Folder is created @ \n" + AllPictureFolderFunction());
+            }
+            else
+            {
+                //MessageBox.Show("Folder compilation is existing.");
+            }
+        }
 
         //employeename folder
         public void createEmployeeFolderClass()

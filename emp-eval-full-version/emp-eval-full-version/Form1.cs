@@ -25,9 +25,15 @@ namespace emp_eval_full_version
         {
             InitializeComponent();
 
+            design();
             //Compilation of reports
             folderCreation.createMainFolderClass();
-            folderCreation.createReadMeFolderClass();
+            folderCreation.createReadMeFolderClass();            
+            //generalClass.dynamicRadioButton(this);
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            design();
         }
 
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
@@ -42,18 +48,23 @@ namespace emp_eval_full_version
         }
 
         private void button1_Click(object sender, EventArgs e)
-        {
+        {         
             int getCord = 0;
-            if (button1.Text == "Reset")
-            {
+            if (button1.Text == "Reset Data")
+            {                
                 // reset the form, to its original form
                 this.WindowState = FormWindowState.Normal;
-                this.Controls.Clear();
+                this.Controls.Clear();                
                 this.InitializeComponent();
+                design();
             }
             else
             {
-                button1.Text = "Reset";                
+                //change the button1 test
+                button1.Text = "Reset Data";
+                button1.Image = (new Bitmap(Resource1.reset, new Size(30, 20)));
+
+                button2.Visible = true;
 
                 // fname, mname, lname, grades 
                 List<string> headerContent = generalClass.headerContent(paths.fileContent(textBox1.Text));
@@ -114,6 +125,28 @@ namespace emp_eval_full_version
             }
         }
 
-        
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {            
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            generalClass.CHECKIFEXPORTMENUSTRIP();
+        }
+
+        public void design()
+        {            
+            button1.Height = 30;            
+            button1.Image = (new Bitmap(Resource1.investigate, new Size(30, 20)));
+            button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            button1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+
+            button2.Text = "Export-All-Image/s";            
+            button2.Height = 30;
+            button2.Width = 135;
+            button2.Image = (new Bitmap(Resource1.picture, new Size(30, 20)));
+            button2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            button2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+        }
     }
 }

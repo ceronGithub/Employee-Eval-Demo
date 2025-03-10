@@ -19,6 +19,7 @@ using System.Xml.Linq;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using System.Reflection;
 
 namespace emp_eval_full_version
 {
@@ -64,9 +65,6 @@ namespace emp_eval_full_version
             }
             return count;
         }
-
-
-
 
         public List<string> empHeaderContent(List<string> fileContents)
         {
@@ -149,11 +147,14 @@ namespace emp_eval_full_version
         }
 
         List<Image> imageList = new List<Image>();
+        List<string> employeeList = new List<string>();
+        List<int> ttlNumbers = new List<int>();        
+
         public int chartGenerator(Form form, int locationCord, int loopData, int ttlOfEmployees, int ttlOfNumberOfSkills, List<string> empName, string[] empGrade, List<string> skillHeaderContent)
         {
             int locationCoordinates = locationCord == 0 ? locationCord = 76
-                                    : locationCord == 76 ? locationCord += 406
-                                    : locationCord = locationCord + 406;
+                                    : locationCord == 76 ? locationCord += 506
+                                    : locationCord = locationCord + 506;
 
             Random randomClr = new Random();
             Chart[] chartGenerator = new Chart[ttlOfEmployees];
@@ -162,7 +163,6 @@ namespace emp_eval_full_version
             Legend[] legend = new Legend[ttlOfNumberOfSkills];
             int highest = 0, lowest = 0, currenthighest = 0;
 
-
             foreach (string empItem in empName)
             {
                 string[] empNameContent = empItem.Split(',');
@@ -170,7 +170,7 @@ namespace emp_eval_full_version
                 chartGenerator[loopData] = new Chart();
                 chartGenerator[loopData].Name = empNameContent[loopData] + " - Chart";
                 chartGenerator[loopData].Titles.Add(string.Join("", empNameContent[loopData] + " - Chart"));
-                chartGenerator[loopData].Height = 400;
+                chartGenerator[loopData].Height = 500;
                 chartGenerator[loopData].Width = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
                 chartGenerator[loopData].Location = new System.Drawing.Point(0, locationCoordinates);
 
@@ -198,8 +198,7 @@ namespace emp_eval_full_version
                         series[s] = new Series
                         {
                             Name = skillHeaderName[s],
-                            Color = colr,
-                            IsValueShownAsLabel = true,
+                            Color = colr,                                                     
                         };
                         chartGenerator[loopData].Series.Add(series[s]);
 
@@ -218,11 +217,24 @@ namespace emp_eval_full_version
                         }
                     }
                 }
-
-
+                
                 Legend legendSingle = new Legend();
                 legendSingle.Title = "Skill Legend/s";
-                legendSingle.LegendStyle = LegendStyle.Table;
+                legendSingle.LegendStyle = LegendStyle.Table; 
+                
+                legendSingle.BorderColor = Color.AntiqueWhite;
+                legendSingle.BorderWidth = 2;
+                legendSingle.BorderDashStyle = ChartDashStyle.Solid;
+                legendSingle.InterlacedRows = true;
+                legendSingle.InterlacedRowsColor = Color.NavajoWhite;
+
+                legendSingle.Font = new Font("Arial", 8,FontStyle.Bold);
+                legendSingle.ForeColor = Color.Black;
+
+                legendSingle.ShadowColor = Color.Red;
+
+                legendSingle.TitleFont = new Font("Arial", 18, FontStyle.Italic);                
+                legendSingle.TableStyle = LegendTableStyle.Tall;                
                 chartGenerator[loopData].Legends.Add(legendSingle);
 
                 chartGenerator[loopData].Invalidate();
@@ -233,15 +245,7 @@ namespace emp_eval_full_version
                 chartArea[loopData].Name = "ChartArea #" + loopData;
 
                 chartArea[loopData].AxisX.Minimum = 0;
-                chartArea[loopData].AxisX.Maximum = ttlOfNumberOfSkills + 1;
-
-                /*
-                 * this makes the x-axis string customize.
-                chartArea[loopData].AxisX.Title = "xxx";
-                chartArea[loopData].AxisX.TitleAlignment = StringAlignment.Center;
-                chartArea[loopData].AxisX.TextOrientation = TextOrientation.Rotated90;
-                chartArea[loopData].AxisX.Interval = 1;
-                */
+                chartArea[loopData].AxisX.Maximum = ttlOfNumberOfSkills + 2;
 
                 chartArea[loopData].AxisY.Minimum = lowest;
                 chartArea[loopData].AxisY.Maximum = highest + 2;
@@ -265,6 +269,37 @@ namespace emp_eval_full_version
                 chartArea[loopData].AxisY.Title = "Grade Evaluation \n -------------- \n " + empNameContent[loopData];
                 chartArea[loopData].AxisY.TitleAlignment = StringAlignment.Center;
 
+                // add stripline to y axis
+                StripLine excellentLine = new StripLine();
+                excellentLine.Interval = 0;
+                excellentLine.IntervalOffset = (highest * .9);
+                excellentLine.StripWidth = 10;
+                excellentLine.BackColor = Color.NavajoWhite;
+                excellentLine.TextLineAlignment = StringAlignment.Far;
+                excellentLine.Font = new Font("Arial", 12, FontStyle.Bold);
+                excellentLine.Text = "Out-standing";
+                chartArea[loopData].AxisY.StripLines.Add(excellentLine);
+
+                StripLine passLine = new StripLine();
+                passLine.Interval = 0;
+                passLine.IntervalOffset = (highest * .8);
+                passLine.StripWidth = ((highest * .9)- (highest * .8));
+                passLine.BackColor = Color.GhostWhite;
+                passLine.TextLineAlignment = StringAlignment.Far;
+                passLine.Font = new Font("Arial", 12,FontStyle.Bold);
+                passLine.Text = "Pass-Margin";
+                chartArea[loopData].AxisY.StripLines.Add(passLine);
+
+                StripLine failLine = new StripLine();
+                failLine.Interval = 0;
+                failLine.IntervalOffset = 0;
+                failLine.StripWidth = highest * .8;
+                failLine.BackColor = Color.AntiqueWhite;
+                failLine.TextLineAlignment = StringAlignment.Far;
+                failLine.Font = new Font("Arial", 12, FontStyle.Bold);
+                failLine.Text = "Failed-Margin";
+                chartArea[loopData].AxisY.StripLines.Add(failLine);
+
                 chartGenerator[loopData].ChartAreas.Add(chartArea[loopData]);
 
                 chartGenerator[loopData].Visible = true;
@@ -272,7 +307,7 @@ namespace emp_eval_full_version
                 int ttlNumberOfImages = ttlOfNumberOfSkills - 5;
                 dynamicButtons(form, ttlOfEmployees, loopData, ttlNumberOfImages, locationCoordinates, chartGenerator[loopData], string.Join("", empNameContent[loopData]), imageList);
 
-                form.Controls.Add(chartGenerator[loopData]);
+                form.Controls.Add(chartGenerator[loopData]);               
 
                 // Convert chart to images.
                 for (int si = 1; si <= ttlNumberOfImages; si++)
@@ -287,18 +322,24 @@ namespace emp_eval_full_version
                         imageList.Add(bmp);
                     }
                 }
-            }
-            return locationCoordinates;
-        }
+
+                chartArea[loopData].AxisX.ScaleView.Position = 0;
+                employeeList.Add(empNameContent[loopData]);
+                ttlNumbers.Add(ttlNumberOfImages);
+                ttlNumbers.Add(ttlOfEmployees);
+            }            
+            return locationCoordinates;       
+        }        
 
         private void dynamicButtons(Form form, int ttlOfButtons, int loopData, int ttlOfImages, int locationCoordinates, Chart chart, string employeeName, List<Image> imageChart)
         {
+            int height = 40;
             // print button
             Button[] printBtn = new Button[ttlOfButtons];
             printBtn[loopData] = new Button();
             printBtn[loopData].Text = "Print";
             printBtn[loopData].Width = 70;
-            printBtn[loopData].Height = 30;
+            printBtn[loopData].Height = height;
 
             printBtn[loopData].Image = (new Bitmap(Resource1.printer, new Size(30, 20)));
             printBtn[loopData].ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -311,10 +352,10 @@ namespace emp_eval_full_version
             Button[] saveFileBtn = new Button[ttlOfButtons];
             saveFileBtn[loopData] = new Button();
             saveFileBtn[loopData].Text = "Save-File as image";
-            saveFileBtn[loopData].Width = 140;
-            saveFileBtn[loopData].Height = 30;
+            saveFileBtn[loopData].Width = 130;
+            saveFileBtn[loopData].Height = height;
 
-            saveFileBtn[loopData].Image = (new Bitmap(Resource1.savefile, new Size(30, 20)));
+            saveFileBtn[loopData].Image = (new Bitmap(Resource1.image, new Size(30, 20)));
             saveFileBtn[loopData].ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             saveFileBtn[loopData].TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             saveFileBtn[loopData].Location = new System.Drawing.Point(230, locationCoordinates + 7);
@@ -323,13 +364,13 @@ namespace emp_eval_full_version
             Button[] excelBtn = new Button[ttlOfButtons];
             excelBtn[loopData] = new Button();
             excelBtn[loopData].Text = "Export to";
-            excelBtn[loopData].Width = 80;
-            excelBtn[loopData].Height = 30;
+            excelBtn[loopData].Width = 85;
+            excelBtn[loopData].Height = height;
 
-            excelBtn[loopData].Image = (new Bitmap(Resource1.excel, new Size(30, 20)));
+            excelBtn[loopData].Image = (new Bitmap(Resource1.excel_one, new Size(30, 20)));
             excelBtn[loopData].ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             excelBtn[loopData].TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            excelBtn[loopData].Location = new System.Drawing.Point(380, locationCoordinates + 7);
+            excelBtn[loopData].Location = new System.Drawing.Point(370, locationCoordinates + 7);
 
             //Clicked event
             printBtn[loopData].Click += (sender, e) => print_click(sender, e, loopData);
@@ -342,7 +383,96 @@ namespace emp_eval_full_version
             form.Controls.Add(printBtn[loopData]);
         }
 
+        public void dynamicRadioButton(Form form)
+        {
+            RadioButton[] rd = new RadioButton[8];
+            for(int i = 0; i < rd.Length; i++)
+            {                
+                switch(i)
+                {                    
+                    case 0:
+                        rd[i] = new RadioButton();
+                        rd[i].Checked = true;
+                        rd[i].Name = "rdColumns";
+                        rd[i].Text = "Columns Chart";
+                        rd[i].Location = new Point(500, 32);
+                        rd[i].Height = 50;
+                        rd[i].Width = 80;                        
+                        form.Controls.Add(rd[i]);
+                    break;
 
+                    case 1:
+                        rd[i] = new RadioButton();
+                        rd[i].Name = "rdClusteredColumn";
+                        rd[i].Text = "Clustered Column Chart";
+                        rd[i].Location = new Point(580, 32);
+                        rd[i].Height = 50;
+                        rd[i].Width = 120;
+                        form.Controls.Add(rd[i]);
+                        break;
+
+                    case 2:
+                        rd[i] = new RadioButton();
+                        rd[i].Name = "rdBarChart";
+                        rd[i].Text = "Bar Chart";
+                        rd[i].Location = new Point(700, 32);
+                        rd[i].Height = 50;
+                        rd[i].Width = 50;
+                        form.Controls.Add(rd[i]);
+                        break;
+
+                    case 3:
+                        rd[i] = new RadioButton();
+                        rd[i].Name = "rdAreaChart";
+                        rd[i].Text = "Area Chart";
+                        rd[i].Location = new Point(760, 32);
+                        rd[i].Height = 50;
+                        rd[i].Width = 50;
+                        form.Controls.Add(rd[i]);
+                        break;
+
+                    case 4:
+                        rd[i] = new RadioButton();
+                        rd[i].Name = "rdLineChart";
+                        rd[i].Text = "Line Chart";
+                        rd[i].Location = new Point(820, 32);
+                        rd[i].Height = 50;
+                        rd[i].Width = 50;
+                        form.Controls.Add(rd[i]);
+                        break;
+
+                    case 5:
+                        rd[i] = new RadioButton();
+                        rd[i].Name = "rdPieChart";
+                        rd[i].Text = "Pie Chart";
+                        rd[i].Location = new Point(880, 32);
+                        rd[i].Height = 50;
+                        rd[i].Width = 50;
+                        form.Controls.Add(rd[i]);
+                        break;
+
+                    case 6:
+                        rd[i] = new RadioButton();
+                        rd[i].Name = "rdScatterChart";
+                        rd[i].Text = "Scatter Chart";
+                        rd[i].Location = new Point(940, 32);
+                        rd[i].Height = 50;
+                        rd[i].Width = 70;
+                        form.Controls.Add(rd[i]);
+                        break;
+
+                    case 7:
+                        rd[i] = new RadioButton();
+                        rd[i].Name = "rdBubbleChart";
+                        rd[i].Text = "Bubble Chart";
+                        rd[i].Location = new Point(1010, 32);
+                        rd[i].Height = 50;
+                        rd[i].Width = 70;
+                        form.Controls.Add(rd[i]);
+                        break;                    
+                }
+            }
+        }
 
 
 
@@ -377,7 +507,8 @@ namespace emp_eval_full_version
                 File.Delete(addedPath + "\\single - " + employeeName + fileExtension);               
                 //create
                 finalImage.Save(addedPath + "\\single - " + employeeName + fileExtension, ImageFormat.Png);
-                multipleImageSave(chartImages, employeeNumber, ttlOfImages, addedPath, employeeName, fileExtension);                
+                multipleImageSave(chartImages, employeeNumber, ttlOfImages, addedPath, employeeName, fileExtension);
+                MessageBox.Show("Folder(picture folder) Directory has been updated \n @" + path, "Note!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             //saveFile(chart, addedPath, fileExtension, employeeName);            
         }
@@ -402,6 +533,9 @@ namespace emp_eval_full_version
             MessageBox.Show("Succesfully export to excel.");
         }
 
+
+
+        // ===========================================ABOUT IMAGES=========================================
         public Image mergeImages(List<Image> imageList, int employeeNumber, int ttlOfImagess, string path, string employeeName, string fileExtension)
         {
             int startImageRange = (((employeeNumber * ttlOfImagess)) - ttlOfImagess);
@@ -434,8 +568,7 @@ namespace emp_eval_full_version
         private void multipleImageSave(List<Image> imageList, int employeeNumber, int ttlOfImagess, string path, string employeeName, string fileExtension)
         {
             int startImageRange = (((employeeNumber * ttlOfImagess)) - ttlOfImagess);
-            int endImageRange = (employeeNumber * ttlOfImagess);
-            //Image[] outputImage = new Image[ttlOfImagess];
+            int endImageRange = (employeeNumber * ttlOfImagess);            
             
             var finalSize = new Size();
             foreach (var image in imageList.Take(endImageRange).Skip(startImageRange))
@@ -452,7 +585,7 @@ namespace emp_eval_full_version
             for (int im = 0; im < ttlOfImagess; im++)
             {
                 y = 0;
-                hheight += 400;
+                hheight += finalSize.Height;
                 var outputImage = new Bitmap(finalSize.Width, hheight);                
                 using (var gfx = Graphics.FromImage(outputImage))
                 {                                                                              
@@ -470,9 +603,27 @@ namespace emp_eval_full_version
             for(int im = 0; im < ttlOfImagess; im++)
             {
                 trial[im].Save(path + "\\indi - " + im + employeeName + fileExtension, ImageFormat.Png);
-            }
+            }            
+        }
 
-            MessageBox.Show("Folder(picture folder) Directory has been updated \n @" + path, "Note!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        //============================================EXPORT===============================================
+        public void CHECKIFEXPORTMENUSTRIP()
+        {
+            //MessageBox.Show(string.Join("", imageList.Count));
+            //create folder
+            folderCreation.createProjectPictureFolderClass();
+            //goal is to get the index 0 and 1 of the ttlNumberList
+            saveAllFile(imageList, employeeList, ttlNumbers[0], ttlNumbers[1]);            
+        }
+
+        public void saveAllFile(List<Image> imageList, List<string> employeeName, int ttlOfSkills, int ttlOfEmp)
+        {
+            for (int i = 0; i < imageList.Count; i++)
+            {
+                imageList[i].Save(folderCreation.AllPictureFolderFunction() + "\\output -" + i + "- chart.png", ImageFormat.Png);
+            }             
+            MessageBox.Show("Folder(All-Output-Pictures) Directory has been created/updated \n @" + folderCreation.AllPictureFolderFunction(), "Note!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
