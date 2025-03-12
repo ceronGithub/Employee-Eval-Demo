@@ -66,6 +66,10 @@ namespace emp_eval_full_version
 
                 button2.Visible = true;
 
+                // adjust form design
+                this.WindowState = FormWindowState.Maximized;
+                this.MaximizeBox = false;
+
                 // fname, mname, lname, grades 
                 List<string> headerContent = generalClass.headerContent(paths.fileContent(textBox1.Text));
 
@@ -90,11 +94,7 @@ namespace emp_eval_full_version
 
                 // 1,2,3,4,5/
                 string empGrade = generalClass.employeeGradeContent(empInfoContent);
-                List<string> empGradeList = new List<string> { empGrade };
-                
-                // adjust form design
-                this.WindowState = FormWindowState.Maximized;
-                this.MaximizeBox = false;
+                List<string> empGradeList = new List<string> { empGrade };                               
 
                 List<string> test = new List<string>();
                 foreach(string item in empGradeList)
