@@ -16,7 +16,7 @@ namespace emp_eval_full_version
         {
             string path = "";
             // allow text, and excel file only
-            browseFile.Filter = "Document File |*.txt;*.xlsx";
+            browseFile.Filter = "Document File |*.txt;*.xlsx";       
             // if click ok          
             if (browseFile.ShowDialog() == DialogResult.OK)
             {

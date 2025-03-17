@@ -146,11 +146,13 @@ namespace emp_eval_full_version
             return skillCount;
         }
 
+
+        //================================================= DYNAMIC ELEMENTS=============================
         List<Image> imageList = new List<Image>();
         List<string> employeeList = new List<string>();
         List<int> ttlNumbers = new List<int>();        
 
-        public int chartGenerator(Form form, int locationCord, int loopData, int ttlOfEmployees, int ttlOfNumberOfSkills, List<string> empName, string[] empGrade, List<string> skillHeaderContent)
+        public int chartGenerator(Form form, int locationCord, int loopData, int ttlOfEmployees, int ttlOfNumberOfSkills, List<string> empName, string[] empGrade, List<string> skillHeaderContent, int hGrade, int lGrade)
         {
             int locationCoordinates = locationCord == 0 ? locationCord = 76
                                     : locationCord == 76 ? locationCord += 506
@@ -198,21 +200,34 @@ namespace emp_eval_full_version
                         series[s] = new Series
                         {
                             Name = skillHeaderName[s],
-                            Color = colr,                                                     
+                            //Color = colr,                                                     
                         };
                         chartGenerator[loopData].Series.Add(series[s]);
 
                         foreach (string item in empGrade)
                         {
                             string[] empGrades = item.Split(',');
+                            // Start : disregard
                             if (Convert.ToInt32(empGrades[s]) > currenthighest)
                             {
                                 currenthighest = Convert.ToInt32(empGrades[s]);
                                 highest = currenthighest;
                             }
+                            // End : disregard
 
                             series1.Points.AddXY(skillHeaderName[s], empGrades[s]);
-                            series1.Points[s].Color = colr;
+
+                            Double.TryParse(empGrades[s], out double empGradess);
+                            if(empGradess < (hGrade * .8))
+                            {
+                                series1.Points[s].Color = Color.Red;
+                                series[s].Color = Color.Red;
+                            }                                      
+                            else
+                            {
+                                series1.Points[s].Color = colr;
+                                series[s].Color = colr;
+                            }
                             series1.Points[s].Label = skillHeaderName[s] + " : " + empGrades[s];
                         }
                     }
@@ -247,8 +262,8 @@ namespace emp_eval_full_version
                 chartArea[loopData].AxisX.Minimum = 0;
                 chartArea[loopData].AxisX.Maximum = ttlOfNumberOfSkills + 2;
 
-                chartArea[loopData].AxisY.Minimum = lowest;
-                chartArea[loopData].AxisY.Maximum = highest + 2;
+                chartArea[loopData].AxisY.Minimum = lGrade;
+                chartArea[loopData].AxisY.Maximum = hGrade + 2;
 
                 chartArea[loopData].AxisX.ScaleView.Zoom(0, 8);
                 chartArea[loopData].AxisX.ScaleView.MinSize = 0;
@@ -272,7 +287,7 @@ namespace emp_eval_full_version
                 // add stripline to y axis
                 StripLine excellentLine = new StripLine();
                 excellentLine.Interval = 0;
-                excellentLine.IntervalOffset = (highest * .9);
+                excellentLine.IntervalOffset = (hGrade * .9);
                 excellentLine.StripWidth = 10;
                 excellentLine.BackColor = Color.NavajoWhite;
                 excellentLine.TextLineAlignment = StringAlignment.Far;
@@ -282,8 +297,8 @@ namespace emp_eval_full_version
 
                 StripLine passLine = new StripLine();
                 passLine.Interval = 0;
-                passLine.IntervalOffset = (highest * .8);
-                passLine.StripWidth = ((highest * .9)- (highest * .8));
+                passLine.IntervalOffset = (hGrade * .8);
+                passLine.StripWidth = ((hGrade * .9)- (hGrade * .8));
                 passLine.BackColor = Color.GhostWhite;
                 passLine.TextLineAlignment = StringAlignment.Far;
                 passLine.Font = new Font("Arial", 12,FontStyle.Bold);
@@ -293,7 +308,7 @@ namespace emp_eval_full_version
                 StripLine failLine = new StripLine();
                 failLine.Interval = 0;
                 failLine.IntervalOffset = 0;
-                failLine.StripWidth = highest * .8;
+                failLine.StripWidth = hGrade * .8;
                 failLine.BackColor = Color.AntiqueWhite;
                 failLine.TextLineAlignment = StringAlignment.Far;
                 failLine.Font = new Font("Arial", 12, FontStyle.Bold);
@@ -304,7 +319,7 @@ namespace emp_eval_full_version
 
                 chartGenerator[loopData].Visible = true;
 
-                int ttlNumberOfImages = ttlOfNumberOfSkills - 5;
+                int ttlNumberOfImages = ttlOfNumberOfSkills - 4;
                 dynamicButtons(form, ttlOfEmployees, loopData, ttlNumberOfImages, locationCoordinates, chartGenerator[loopData], string.Join("", empNameContent[loopData]), imageList);
 
                 form.Controls.Add(chartGenerator[loopData]);               
@@ -474,6 +489,66 @@ namespace emp_eval_full_version
             }
         }
 
+        public (int hValue, int lValue) gradingDynamic(Form form)
+        {            
+            form.Height = 200;
+            Label[] lblText = new Label[3];
+            TextBox[] txtField = new TextBox[2];
+            int hValue = 0, lValue = 0;
+
+            int fWidth = Convert.ToInt32(form.Width * Convert.ToDouble(.3));
+
+            lblText[0] = new Label();
+            lblText[0].Name = "HighestLbl";
+            lblText[0].Text = "Highest grade:";
+            lblText[0].Width = 80;
+            lblText[0].Height = 15;
+            lblText[0].Location = new System.Drawing.Point(fWidth, 100);
+
+            txtField[0] = new TextBox();
+            txtField[0].Name = "highestTxt";
+            txtField[0].Text = "";
+            txtField[0].Width = 80;
+            txtField[0].Height = 15;
+            txtField[0].Location = new System.Drawing.Point(fWidth + 80, 100 - 3);
+
+            lblText[1] = new Label();
+            lblText[1].Name = "LowestLbl";
+            lblText[1].Text = "Lowest grade:";
+            lblText[1].Width = 80;
+            lblText[1].Height = 15;
+            lblText[1].Location = new System.Drawing.Point(fWidth, 130);
+
+            txtField[1] = new TextBox();
+            txtField[1].Name = "LowestTxt";
+            txtField[1].Text = "";
+            txtField[1].Width = 80;
+            txtField[1].Height = 15;
+            txtField[1].Location = new System.Drawing.Point(fWidth + 80, 130 - 3);
+
+            lblText[2] = new Label();
+            lblText[2].Name = "headerLbl";
+            lblText[2].Text = "Set Grade Value!!!";
+            lblText[2].Width = 120;
+            lblText[2].Height = 15;
+            lblText[2].Location = new System.Drawing.Point(fWidth + 80, 75);
+
+            if (txtField[0].Text != "" && txtField[1].Text != "")
+            {
+                hValue = Convert.ToInt32(txtField[0].Text);
+                lValue = Convert.ToInt32(txtField[1].Text);
+            }
+
+            form.Controls.Add(lblText[0]);
+            form.Controls.Add(lblText[1]);
+            form.Controls.Add(lblText[2]);
+
+            form.Controls.Add(txtField[0]);
+            form.Controls.Add(txtField[1]);
+            
+            return (hValue, lValue);
+        }
+        
 
 
         // ======================================== CLICK-EVENT===========================================

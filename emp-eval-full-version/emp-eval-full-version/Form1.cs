@@ -20,7 +20,7 @@ namespace emp_eval_full_version
         General_class generalClass = new General_class();
         Create_folder_class folderCreation = new Create_folder_class();
         Path_class paths = new Path_class();
-       
+        int hValueGrade = 0, lValueGrade = 0;
         public Form1()
         {
             InitializeComponent();
@@ -36,8 +36,19 @@ namespace emp_eval_full_version
             design();
         }
 
-        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        public (int setHGrade, int setLGrade) Reciever(string hValue, string lValue)
         {
+            int getHGrade = 0, getLGrade = 0;
+            getHGrade = Convert.ToInt32(hValue);
+            getLGrade = Convert.ToInt32(lValue);
+            hValueGrade = getHGrade; lValueGrade = getLGrade;
+            highestGradeToolStripMenuItem.Text = "" + hValueGrade;
+            lowestGradeToolStripMenuItem.Text = "" + lValueGrade;
+            return (getHGrade, getLGrade);
+        }
+
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        {           
             textBox1.Text = paths.browseFileFunction();
             button1.Enabled = true;
         }
@@ -108,17 +119,17 @@ namespace emp_eval_full_version
                         if (getCord == 0)
                         {
                             //MessageBox.Show("A");
-                            getCord = generalClass.chartGenerator(this, 0, i, empCount, skillCount, empNameList, new string[] { splitGrade[i] } , skillHeaderContent);
+                            getCord = generalClass.chartGenerator(this, 0, i, empCount, skillCount, empNameList, new string[] { splitGrade[i] } , skillHeaderContent, hValueGrade, lValueGrade);
                         }
                         else if (getCord == 76)
                         {
                             //MessageBox.Show("B");
-                            getCord = generalClass.chartGenerator(this, 76, i, empCount, skillCount, empNameList, new string[] { splitGrade[i] }, skillHeaderContent);
+                            getCord = generalClass.chartGenerator(this, 76, i, empCount, skillCount, empNameList, new string[] { splitGrade[i] }, skillHeaderContent, hValueGrade, lValueGrade);
                         }
                         else if (getCord != 76)
                         {
                             //MessageBox.Show("C");
-                            getCord = generalClass.chartGenerator(this, getCord, i, empCount, skillCount, empNameList, new string[] { splitGrade[i] }, skillHeaderContent);
+                            getCord = generalClass.chartGenerator(this, getCord, i, empCount, skillCount, empNameList, new string[] { splitGrade[i] }, skillHeaderContent, hValueGrade, lValueGrade);
                         }
                     }
                 }                                                       
@@ -134,14 +145,21 @@ namespace emp_eval_full_version
             generalClass.CHECKIFEXPORTMENUSTRIP();
         }
 
+        private void setGradesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form2 f2 = new Form2();
+            this.Hide();
+            f2.Show();
+        }
+        
         public void design()
-        {            
-            button1.Height = 30;            
+        {
+            button1.Height = 30;
             button1.Image = (new Bitmap(Resource1.investigate, new Size(30, 20)));
             button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             button1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 
-            button2.Text = "Export-All-Image/s";            
+            button2.Text = "Export-All-Image/s";
             button2.Height = 30;
             button2.Width = 135;
             button2.Image = (new Bitmap(Resource1.picture, new Size(30, 20)));

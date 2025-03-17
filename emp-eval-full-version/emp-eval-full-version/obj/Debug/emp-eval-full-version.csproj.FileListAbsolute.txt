@@ -9,3 +9,8 @@ C:\Users\Ceron Calsena\OneDrive\Desktop\c-sharp-project\employee-evaluation-full
 C:\Users\Ceron Calsena\OneDrive\Desktop\c-sharp-project\employee-evaluation-full-version\emp-eval-full-version\emp-eval-full-version\obj\Debug\emp-eval-full-version.exe
 C:\Users\Ceron Calsena\OneDrive\Desktop\c-sharp-project\employee-evaluation-full-version\emp-eval-full-version\emp-eval-full-version\obj\Debug\emp-eval-full-version.pdb
 C:\Users\Ceron Calsena\OneDrive\Desktop\c-sharp-project\employee-evaluation-full-version\emp-eval-full-version\emp-eval-full-version\obj\Debug\emp_eval_full_version.Resource1.resources
+C:\Users\Ceron Calsena\OneDrive\Desktop\c-sharp-project\employee-evaluation-full-version\emp-eval-full-version\emp-eval-full-version\bin\Debug\PdfiumViewer.dll
+C:\Users\Ceron Calsena\OneDrive\Desktop\c-sharp-project\employee-evaluation-full-version\emp-eval-full-version\emp-eval-full-version\bin\Debug\PdfiumViewer.xml
+C:\Users\Ceron Calsena\OneDrive\Desktop\c-sharp-project\employee-evaluation-full-version\emp-eval-full-version\emp-eval-full-version\bin\Debug\nl\PdfiumViewer.resources.dll
+C:\Users\Ceron Calsena\OneDrive\Desktop\c-sharp-project\employee-evaluation-full-version\emp-eval-full-version\emp-eval-full-version\obj\Debug\emp-eval-full-version.csproj.CopyComplete
+C:\Users\Ceron Calsena\OneDrive\Desktop\c-sharp-project\employee-evaluation-full-version\emp-eval-full-version\emp-eval-full-version\obj\Debug\emp_eval_full_version.Form2.resources
