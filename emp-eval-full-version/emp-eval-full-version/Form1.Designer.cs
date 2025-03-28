@@ -30,17 +30,17 @@
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.directoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gradingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setGradesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewGradesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.highestGradeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lowestGradeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.directoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewGradesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.highestGradeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lowestGradeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -60,9 +60,26 @@
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importToolStripMenuItem,
             this.directoryToolStripMenuItem});
+            this.settingsToolStripMenuItem.Enabled = false;
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // importToolStripMenuItem
+            // 
+            this.importToolStripMenuItem.Image = global::emp_eval_full_version.Resource1.file;
+            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importToolStripMenuItem.Text = "Re/Locate File";
+            this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
+            // 
+            // directoryToolStripMenuItem
+            // 
+            this.directoryToolStripMenuItem.Image = global::emp_eval_full_version.Resource1.open_folder;
+            this.directoryToolStripMenuItem.Name = "directoryToolStripMenuItem";
+            this.directoryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.directoryToolStripMenuItem.Text = "Directory";
+            this.directoryToolStripMenuItem.Click += new System.EventHandler(this.directoryToolStripMenuItem_Click);
             // 
             // gradingToolStripMenuItem
             // 
@@ -76,9 +93,30 @@
             // setGradesToolStripMenuItem
             // 
             this.setGradesToolStripMenuItem.Name = "setGradesToolStripMenuItem";
-            this.setGradesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setGradesToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.setGradesToolStripMenuItem.Text = "Set Grade/s";
             this.setGradesToolStripMenuItem.Click += new System.EventHandler(this.setGradesToolStripMenuItem_Click);
+            // 
+            // viewGradesToolStripMenuItem
+            // 
+            this.viewGradesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.highestGradeToolStripMenuItem,
+            this.lowestGradeToolStripMenuItem});
+            this.viewGradesToolStripMenuItem.Name = "viewGradesToolStripMenuItem";
+            this.viewGradesToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.viewGradesToolStripMenuItem.Text = "View Grades";
+            // 
+            // highestGradeToolStripMenuItem
+            // 
+            this.highestGradeToolStripMenuItem.Name = "highestGradeToolStripMenuItem";
+            this.highestGradeToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.highestGradeToolStripMenuItem.Text = "highestGrade";
+            // 
+            // lowestGradeToolStripMenuItem
+            // 
+            this.lowestGradeToolStripMenuItem.Name = "lowestGradeToolStripMenuItem";
+            this.lowestGradeToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.lowestGradeToolStripMenuItem.Text = "lowestGrade";
             // 
             // textBox1
             // 
@@ -121,43 +159,6 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Visible = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // importToolStripMenuItem
-            // 
-            this.importToolStripMenuItem.Image = global::emp_eval_full_version.Resource1.file;
-            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-            this.importToolStripMenuItem.Text = "Re/Locate File";
-            this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
-            // 
-            // directoryToolStripMenuItem
-            // 
-            this.directoryToolStripMenuItem.Image = global::emp_eval_full_version.Resource1.open_folder;
-            this.directoryToolStripMenuItem.Name = "directoryToolStripMenuItem";
-            this.directoryToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-            this.directoryToolStripMenuItem.Text = "Directory";
-            this.directoryToolStripMenuItem.Click += new System.EventHandler(this.directoryToolStripMenuItem_Click);
-            // 
-            // viewGradesToolStripMenuItem
-            // 
-            this.viewGradesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.highestGradeToolStripMenuItem,
-            this.lowestGradeToolStripMenuItem});
-            this.viewGradesToolStripMenuItem.Name = "viewGradesToolStripMenuItem";
-            this.viewGradesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.viewGradesToolStripMenuItem.Text = "View Grades";
-            // 
-            // highestGradeToolStripMenuItem
-            // 
-            this.highestGradeToolStripMenuItem.Name = "highestGradeToolStripMenuItem";
-            this.highestGradeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.highestGradeToolStripMenuItem.Text = "highestGrade";
-            // 
-            // lowestGradeToolStripMenuItem
-            // 
-            this.lowestGradeToolStripMenuItem.Name = "lowestGradeToolStripMenuItem";
-            this.lowestGradeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.lowestGradeToolStripMenuItem.Text = "lowestGrade";
             // 
             // Form1
             // 

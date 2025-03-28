@@ -28,12 +28,13 @@ namespace emp_eval_full_version
             design();
             //Compilation of reports
             folderCreation.createMainFolderClass();
-            folderCreation.createReadMeFolderClass();            
+            folderCreation.createReadMeFolderClass();
             //generalClass.dynamicRadioButton(this);
+            MessageBox.Show("Enter value from highest to lowest grade.", "NOTE!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            design();
+            design();            
         }
 
         public (int setHGrade, int setLGrade) Reciever(string hValue, string lValue)
@@ -44,6 +45,8 @@ namespace emp_eval_full_version
             hValueGrade = getHGrade; lValueGrade = getLGrade;
             highestGradeToolStripMenuItem.Text = "" + hValueGrade;
             lowestGradeToolStripMenuItem.Text = "" + lValueGrade;
+            settingsToolStripMenuItem.Enabled = true;
+            MessageBox.Show("You can now import file", "NOTE!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return (getHGrade, getLGrade);
         }
 
@@ -68,6 +71,7 @@ namespace emp_eval_full_version
                 this.Controls.Clear();                
                 this.InitializeComponent();
                 design();
+                MessageBox.Show("Enter value from highest to lowest grade.", "NOTE!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {

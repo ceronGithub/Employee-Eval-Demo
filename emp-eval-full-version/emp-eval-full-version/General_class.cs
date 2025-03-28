@@ -597,7 +597,8 @@ namespace emp_eval_full_version
         // ======================================== METHOD-EVENT===========================================
         private void printMethod(int employeeNumber)
         {
-            MessageBox.Show("Print " + ((employeeNumber + 1) * 5));
+            //MessageBox.Show("Print " + ((employeeNumber + 1) * 5));
+            MessageBox.Show("UNDER MAINTENANCE", "NOTE!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         private void saveFile(Chart chart, string folderPath, string fileExtension, string employeeName)
         {
@@ -605,7 +606,8 @@ namespace emp_eval_full_version
         }
         private void exportToExcel()
         {
-            MessageBox.Show("Succesfully export to excel.");
+            //MessageBox.Show("Succesfully export to excel.");
+            MessageBox.Show("UNDER MAINTENANCE", "NOTE!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
 
